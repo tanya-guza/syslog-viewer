@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Syslog JS Viewer</title>
+    <script type="text/JavaScript" src="js/jquery-1.9.1.min.js"></script>
+    <script type="text/JavaScript" src="js/bootstrap.min.js"></script>
+    <script type="text/JavaScript" src="js/viewer.js"></script>
+    <script type="text/JavaScript" src="js/testdata.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <style>
+      body {
+        padding-top: 60px;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Syslog JS Viewer</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <h1>Syslog Viewer Demo</h1>
+         
+      <p><input type="checkbox" id="updateCheckbox" checked="true">&nbsp;<span>Enable updates</span></p>
+      <table id="syslogTable" class="table table-bordered">
+	<thead>
+	  <tr>
+	    <th>Date</th>
+	    <th>Time</th>
+	    <th>Hostname</th>
+	    <th>Source</th>
+	    <th>PID</th>
+	    <th>Message</th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+
+
+    </div>
+    
+    <script type="text/javascript">
+      
+      // Determines maximal size of table after which entries are truncated
+      var tableMaxSize = 10;
+      
+      // Variable containing parsed log entries. Should be updated via SyslogJS.addRowToLogData callback
+      var logData = [];
+      
+      // Code for handling enabling/disabling updates
+      // Note that in the current implementation disabled updates means that
+      // rendering is stopped but data is being refreshed in logData array.
+      var enableUpdates = true;
+      $('#updateCheckbox').click(function(){
+	  if($(this).is(':checked')){
+	    enableUpdates = true;
+	    // Hard update. If we were on pause now we should completely refresh table, because
+	    // it may contain outdated infromation
+	    SyslogJS.fillTable('#syslogTable tbody', logData);
+	  } else {
+	    enableUpdates = false;
+	  }
+      });
+      
+      
+      // Used for iterating through test data
+      // to emulate callback calls
+      var currentItem = 0;
+      
+      // Callback for updating table
+      var updateTable = function(parsedLine){
+	// Won't update when paused
+        if(enableUpdates){
+	  // Soft-update
+	  SyslogJS.addRowToTable('#syslogTable tbody', parsedLine, tableMaxSize);
+	}
+      };
+      
+      // Emulates "external" script which executes our callback
+      setInterval(function(){
+      
+	// Callback to update log entries. Here I'm using dummy test data to demonstrate usage of callback
+	// SyslogJS.addRowToLogData also accepts callback to allow easily update UI after data is arrived
+	SyslogJS.addRowToLogData(logData, syslogLines[currentItem % syslogLines.length], tableMaxSize, 
+	  updateTable
+	);
+	
+	currentItem++;
+      }, 1000); 
+      
+      
+  </script>
+
+  </body>
+</html>
+
