@@ -92,7 +92,7 @@
 	// Callback to update log entries. Here I'm using dummy test data to demonstrate usage of callback
 	// SyslogJS.addRowToLogData also accepts callback to allow easily update UI after data is arrived
 	SyslogJS.addRowToLogData(logData, syslogLines[currentItem % syslogLines.length], tableMaxSize, 
-	  updateTable
+	  {'onSuccess' : updateTable}
 	);
 	
 	currentItem++;

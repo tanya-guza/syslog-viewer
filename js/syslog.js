@@ -33,11 +33,14 @@ var SyslogJS = {
   parseLine : function(logLine){
     
     // Regex is quite big because we need to be rather flexible with hostnames
-    var syslogMatch = logLine.match(/^(\w{3}\s\d{1,2})\s(\d{2}:\d{2}:\d{2})\s((?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?)\s([a-z,A-Z,\-,\.]+)\[?(\d+)?\]?:(.*)$/);
+    var syslogMatch = logLine.match(/^(\w{3}\s\d{1,2})\s(\d{2}:\d{2}:\d{2})\s((?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?)\s([a-z,A-Z,\-,\.]+)\[?(\d+)?\]?:\s(.*)$/);
     
-    syslogMatch.shift();
-    
-    return syslogMatch;
+    if (syslogMatch){
+      syslogMatch.shift();
+      return syslogMatch;
+    } else {
+      return [];
+    }
   },
 
   /**
@@ -48,22 +51,35 @@ var SyslogJS = {
   * to keep the same number of records. If logData.length equals to maxSize
   * new record is added to the begining of array and the oldest record is removed
   * from the end.
-  * @param updateCallback optional callback which is called after data was added to array
-  * with parsed log entries. Can be used for updating UI
+  * @param configuration optional parameter which can be used to set 
+  * success and failure callbacks
   * @return modified array with parsed log records
   */
-  addRowToLogData : function(logData, syslogLine, maxSize, updateCallback){
+  addRowToLogData : function(logData, syslogLine, maxSize, configuration){
+    
+    if(isNaN(maxSize) || maxSize <= 0){
+      throw 'InvalidSizeException';
+    }
+    
     if(logData.length == maxSize){
       logData.pop();
     }
     var parsedLine = this.parseLine(syslogLine);
-    logData.unshift(parsedLine); 
+    var onSuccess = configuration ? configuration.onSuccess : undefined;
+    var onFailure = configuration ? configuration.onFailure : undefined;
     
-    if ( typeof (updateCallback) == 'function'){
-      updateCallback(parsedLine);
+    if (parsedLine.length){
+      logData.unshift(parsedLine);
+      if (typeof onSuccess == 'function'){
+	onSuccess(parsedLine);
+      }
+      return logData;
+    } else {
+        if (typeof onFailure == 'function'){
+	  onFailure(parsedLine);
+	}
+	return [];
     }
-    
-    return logData;
   },
 
   /** 
