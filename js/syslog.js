@@ -105,6 +105,10 @@ var SyslogJS = {
   * @param maxSize determines maximal size after which last table row should be truncated
   */
   addRowToTable : function(tableId, logData, maxSize){
+    
+    if(isNaN(maxSize) || maxSize <= 0){
+      throw 'InvalidSizeException';
+    }
     var row = '<tr>' +
     '<td>' + logData[0] + '</td>' + '<td>' + logData[1] + '</td>' + '<td>' + logData[2] + '</td>' + '<td>' + logData[3] + '</td>' + 
     '<td>' + logData[4] + '</td>' + '<td>' + logData[5] + '</td>'  +
@@ -121,10 +125,10 @@ var SyslogJS = {
   * @param tableId table identifier
   * @param logData array with parsed log lines represented as array 
   */
-  fillTable : function(tableId, logData){
+  fillTable : function(tableId, logData, size){
     $(tableId).empty();
     for(i = 0; i < logData.length; i++){
-      this.addRowToTable(tableId, logData[i]);
+      this.addRowToTable(tableId, logData[i], size);
     }
   }
 

@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <title>Syslog JS Viewer</title>
-    <script type="text/JavaScript" src="js/jquery-1.9.1.min.js"></script>
-    <script type="text/JavaScript" src="js/bootstrap.min.js"></script>
+    <script type="text/JavaScript" src="js/lib/jquery.js"></script>
+    <script type="text/JavaScript" src="js/lib/bootstrap.min.js"></script>
     <script type="text/JavaScript" src="js/syslog.js"></script>
-    <script type="text/JavaScript" src="js/testdata.js"></script>
+    <script type="text/JavaScript" src="js/test/testdata.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
     <style>
       body {
@@ -66,7 +66,7 @@
 	    enableUpdates = true;
 	    // Hard update. If we were on pause now we should completely refresh table, because
 	    // it may contain outdated infromation
-	    SyslogJS.fillTable('#syslogTable tbody', logData);
+	    SyslogJS.fillTable('#syslogTable tbody', logData, tableMaxSize);
 	  } else {
 	    enableUpdates = false;
 	  }

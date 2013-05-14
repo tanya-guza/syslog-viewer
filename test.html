@@ -3,13 +3,32 @@
 <head>  
     <title>QUnit Test Suite</title>  
     <link rel="stylesheet" href="css/qunit-1.11.0.css" type="text/css" media="screen">  
-    <script type="text/javascript" src="js/qunit-1.11.0.js"></script>  
+    <script type="text/javascript" src="js/lib/qunit-1.11.0.js"></script>  
+    <script type="text/javascript" src="js/lib/jquery.js"></script>
     <!-- Your project file goes here -->  
     <script type="text/javascript" src="js/syslog.js"></script>  
     <!-- Your tests file goes here -->  
-    <script type="text/javascript" src="js/syslogTests.js"></script>  
+    <script type="text/javascript" src="js/test/syslogTests.js"></script>  
 </head>  
 <body>  
+
+
+  <div style="display:none">
+      <table id="sysTable" class="table table-bordered">
+	  <thead>
+	    <tr>
+	      <th>Date</th>
+	      <th>Time</th>
+	      <th>Hostname</th>
+	      <th>Source</th>
+	      <th>PID</th>
+	      <th>Message</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  </tbody>
+      </table>
+  </div>
     <h1 id="qunit-header">QUnit Test Suite</h1>  
     <h2 id="qunit-banner"></h2>  
     <div id="qunit-testrunner-toolbar"></div>  
